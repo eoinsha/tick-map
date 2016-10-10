@@ -1,0 +1,35 @@
+{
+  "name": "tick-map",
+  "version": "1.0.0",
+  "description": "A bucket list-like data structure decimal time ticks within a time period",
+  "main": "tick-map.js",
+  "scripts": {
+    "test": "tap test --branches=100 --functions=100 --lines=100 --statements=100"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/eoinsha/tick-map.git"
+  },
+  "keywords": [
+    "list",
+    "map",
+    "seconds",
+    "time"
+  ],
+  "author": "Eoin Shanaghy <eoin@showpiper.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/eoinsha/tick-map/issues"
+  },
+  "homepage": "https://github.com/eoinsha/tick-map#readme",
+  "devDependencies": {
+    "standard": "^8.3.0",
+    "tap": "^7.1.2"
+  },
+  "dependencies": {
+    "lodash.find": "^4.6.0",
+    "lodash.sortedindexby": "^4.6.0",
+    "pseudomap": "^1.0.2"
+  },
+  "runkitExampleFilename": "example.js"
+}
