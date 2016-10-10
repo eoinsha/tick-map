@@ -1,6 +1,6 @@
 {
   "name": "tick-map",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A bucket list-like data structure decimal time ticks within a time period",
   "main": "tick-map.js",
   "scripts": {
