@@ -4,6 +4,7 @@
   "description": "A bucket list-like data structure decimal time ticks within a time period",
   "main": "tick-map.js",
   "scripts": {
+    "postversion": "git push origin HEAD && git push origin v${npm_package_version}",
     "test": "tap test --100",
     "cov": "tap test --100 --coverage-report=html"
   },
