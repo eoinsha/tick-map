@@ -24,7 +24,7 @@ Object.defineProperties(TickMap.prototype, {
     return this.internals.tickSeq.length;
   }},
   bucketCount: { enumerable: true, get: function() {
-    return this.internals.bucketMap.size;
+    return this.internals.bucketKeys.length;
   }},
   _getBucket: { enumerable: false, get: function() {
     return getBucket;
