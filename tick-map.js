@@ -5,6 +5,8 @@ var Map = require('pseudomap');
 var Find = require('lodash.find');
 var SortedIndexBy = require('lodash.sortedindexby');
 
+var EMPTY = []; // Avoid creating man empty arrays for very sparse tick maps
+
 function TickMap() {
   if (!(this instanceof TickMap)) {
     return new TickMap();
@@ -77,7 +79,7 @@ TickMap.prototype.getBucketItems = function(tick) {
       return entry.value;
     });
   }
-  return [];
+  return EMPTY;
 }
 
 
