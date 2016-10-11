@@ -122,6 +122,34 @@ test('get correct bucket index for some values', function(t) {
   t.end();
 });
 
+test('get correct last bucket index for some values', function(t) {
+  var tm = new TickMap();
+  var ticks = [
+    2.2,
+    3.3,3.999,
+    5.5,
+    6.6,6,6.9999
+  ];
+  ticks.forEach(function(tick) {
+    tm.add(tick, { prop: new Date() });
+  });
+  t.equal(tm.bucketCount, 4);
+  t.equal(tm.lastBucketIndexFor(0), 0);
+  t.equal(tm.lastBucketIndexFor(0.5555), 0);
+  t.equal(tm.lastBucketIndexFor(1), 0);
+  t.equal(tm.lastBucketIndexFor(2), 0);
+  t.equal(tm.lastBucketIndexFor(2.2), 0);
+  t.equal(tm.lastBucketIndexFor(2.3), 0);
+  t.equal(tm.lastBucketIndexFor(3.5), 1);
+  t.equal(tm.lastBucketIndexFor(4.1), 1);
+  t.equal(tm.lastBucketIndexFor(5), 1);
+  t.equal(tm.lastBucketIndexFor(5.6), 2);
+  t.equal(tm.lastBucketIndexFor(6.9), 3);
+  t.equal(tm.lastBucketIndexFor(7), 3);
+  t.equal(tm.lastBucketIndexFor(10), 3);
+  t.end();
+});
+
 test('add a value and fail to get by bucket neighbour', function(t) {
   var tm = TickMap();
   var value = { prop: new Date() }; // Can be anything

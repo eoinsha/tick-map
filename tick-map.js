@@ -84,6 +84,23 @@ TickMap.prototype.bucketIndexFor = function(tick) {
 }
 
 /**
+ * Get the zero-based index of the populated bucket that represents
+ * the nearest tick equal to or less than the specified tick.
+ *
+ * @return integer index into the populated bucket or 0 if no buckets exist
+ */
+TickMap.prototype.lastBucketIndexFor = function(tick) {
+  var bucketKey = makeBucketKey(tick);
+  var lastIndex = SortedIndexBy(this.internals.bucketKeys, bucketKey);
+  var lastIndexKey = this.internals.bucketKeys[lastIndex];
+  var bucket = lastIndexKey && this.internals.bucketMap.get(lastIndexKey);
+  if (lastIndex !== 0 && (!bucket || bucket[0].tick > tick)) {
+    --lastIndex; // Point to the previous populated bucket
+  }
+  return lastIndex;
+}
+
+/**
  * Retrieve an item by zero-based index
  */
 TickMap.prototype.item = function(index) {
