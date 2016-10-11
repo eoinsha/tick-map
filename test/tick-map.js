@@ -95,6 +95,33 @@ test('get buckets by zero-based index', function(t) {
   t.end();
 });
 
+test('get correct bucket index for some values', function(t) {
+  var tm = new TickMap();
+  var ticks = [
+    2.2,
+    3.3,3.999,
+    5.5,
+    6.6,6,6.9999
+  ];
+  ticks.forEach(function(tick) {
+    tm.add(tick, { prop: new Date() });
+  });
+  t.equal(tm.bucketCount, 4);
+  t.equal(tm.bucketIndexFor(0), 0);
+  t.equal(tm.bucketIndexFor(0.5555), 0);
+  t.equal(tm.bucketIndexFor(1), 0);
+  t.equal(tm.bucketIndexFor(2), 0);
+  t.equal(tm.bucketIndexFor(2.2), 0);
+  t.equal(tm.bucketIndexFor(3.5), 1);
+  t.equal(tm.bucketIndexFor(4.1), 2);
+  t.equal(tm.bucketIndexFor(5), 2);
+  t.equal(tm.bucketIndexFor(5.6), 2);
+  t.equal(tm.bucketIndexFor(6.9), 3);
+  t.equal(tm.bucketIndexFor(7), 4);
+  t.equal(tm.bucketIndexFor(10), 4);
+  t.end();
+});
+
 test('add a value and fail to get by bucket neighbour', function(t) {
   var tm = TickMap();
   var value = { prop: new Date() }; // Can be anything

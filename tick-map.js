@@ -74,6 +74,16 @@ TickMap.prototype.add = function(tick, value) {
 }
 
 /**
+ * Get the zero-based index of the populated bucket based on the
+ * correct position for the specified tick/key whether it is present or not
+ *
+ * @return integer index into the populated bucket
+ */
+TickMap.prototype.bucketIndexFor = function(tick) {
+  return SortedIndexBy(this.internals.bucketKeys, makeBucketKey(tick));
+}
+
+/**
  * Retrieve an item by zero-based index
  */
 TickMap.prototype.item = function(index) {
