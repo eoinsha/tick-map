@@ -30,6 +30,7 @@
   "dependencies": {
     "es6-map": "^0.1.4",
     "lodash.find": "^4.6.0",
+    "lodash.findindex": "^4.6.0",
     "lodash.sortedindexby": "^4.6.0"
   },
   "runkitExampleFilename": "example.js"

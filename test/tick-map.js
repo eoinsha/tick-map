@@ -122,6 +122,32 @@ test('get correct bucket index for some values', function(t) {
   t.end();
 });
 
+test('remove values', function(t) {
+  var tm = new TickMap();
+  var ticks = [
+    2.2,
+    3.3,3.999,
+    5.5,
+    6.6,6,6.9999
+  ];
+  var values = [];
+  ticks.forEach(function(tick) {
+    var value = { prop: new Date() };
+    values.push(value);
+    tm.add(tick, value);
+  });
+
+  t.notOk(tm.remove(1, { prop: new Date() }));
+  t.equal(tm.length, 7);
+  t.notOk(tm.remove(2.2, { prop: new Date() }));
+  t.equal(tm.length, 7);
+  t.ok(tm.remove(ticks[1], values[1]));
+  t.equal(tm.length, 6);
+  t.ok(tm.remove(ticks[2], values[2]));
+  t.equal(tm.length, 5);
+  t.end();
+});
+
 test('get correct last bucket index for some values', function(t) {
   var tm = new TickMap();
   var ticks = [

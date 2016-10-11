@@ -3,6 +3,7 @@ module.exports = TickMap;
 var Map = require('es6-map');
 
 var Find = require('lodash.find');
+var FindIndex = require('lodash.findIndex');
 var SortedIndexBy = require('lodash.sortedindexby');
 
 var EMPTY = []; // Avoid creating man empty arrays for very sparse tick maps
@@ -71,6 +72,31 @@ TickMap.prototype.add = function(tick, value) {
     var bucketIndex = SortedIndexBy(bucket, entry, entryTickMap);
     bucket.splice(bucketIndex, 0, entry);
   }
+}
+
+/**
+ * Delete the entry specified by exact tick and value
+ * @return `true` if found and deleted, `false` otherwise
+ */
+TickMap.prototype.remove = function(tick, value) {
+  var bucketKey = makeBucketKey(tick);
+  var bucket = this.internals.bucketMap.get(bucketKey);
+  if (bucket) {
+    const bucketIndex = FindIndex(bucket, {tick: tick, value: value});
+    if (bucketIndex > -1) {
+      if (bucket.length === 1) { // Would be empty so delete the bucket
+        this.internals.bucketMap.delete(bucketKey);
+        var bucketKeyIndex = SortedIndexBy(this.internals.bucketKeys, bucketKey);
+        this.internals.bucketKeys.splice(bucketKeyIndex, 1);
+      }
+      else {
+        bucket.splice(bucketIndex, 1);
+      }
+      this.internals.tickSeq.splice(this.internals.tickSeq.indexOf(tick), 1);
+      return true;
+    }
+  }
+  return false;
 }
 
 /**
