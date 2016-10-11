@@ -58,6 +58,28 @@ test('add a value and get by exact tick', function(t) {
   t.end();
 });
 
+test('length and bucket count when same', function(t) {
+  var tm = new TickMap();
+  var ticks = [1.1,2.2,3.3,4.4,5.5,6.6];
+  ticks.forEach(function(tick) {
+    tm.add(tick, { prop: new Date() });
+  });
+  t.equal(tm.length, ticks.length);
+  t.equal(tm.bucketCount, ticks.length);
+  t.end();
+});
+
+test('length and bucket count when buckets have many', function(t) {
+  var tm = new TickMap();
+  var ticks = [1,1.1,1.7,2.2,3.3,3.999,4.4,4.5,5.5,6.6,6,6.9999];
+  ticks.forEach(function(tick) {
+    tm.add(tick, { prop: new Date() });
+  });
+  t.equal(tm.length, ticks.length);
+  t.equal(tm.bucketCount, 6);
+  t.end();
+});
+
 test('add a value and fail to get by bucket neighbour', function(t) {
   var tm = TickMap();
   var value = { prop: new Date() }; // Can be anything

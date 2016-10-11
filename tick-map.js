@@ -22,6 +22,9 @@ Object.defineProperties(TickMap.prototype, {
   length: { enumerable: true, get: function() {
     return this.internals.tickSeq.length;
   }},
+  bucketCount: { enumerable: true, get: function() {
+    return this.internals.bucketMap.size;
+  }},
   _getBucket: { enumerable: false, get: function() {
     return getBucket;
   }}
