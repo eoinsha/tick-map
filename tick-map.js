@@ -1,6 +1,6 @@
 module.exports = TickMap;
 
-var Map = require('pseudomap');
+var Map = require('es6-map');
 
 var Find = require('lodash.find');
 var SortedIndexBy = require('lodash.sortedindexby');
@@ -14,6 +14,7 @@ function TickMap() {
 
   this.internals = {
     tickSeq: [],  // Ordered array of populated ticks in the map. Duplicates are allowed
+    bucketKeys: [],  // Ordered array of bucket keys
     bucketMap: new Map()
   };
 }
@@ -32,19 +33,44 @@ Object.defineProperties(TickMap.prototype, {
 
 
 TickMap.prototype.add = function(tick, value) {
-  var targetIndex = SortedIndexBy(this.internals.tickSeq, tick);
-  this.internals.tickSeq.splice(targetIndex, 0, tick);
+  var append = false;
+  var tickSeq = this.internals.tickSeq;
+
+  // Optimising for append by order is worthwhile
+  var append = tickSeq.length === 0 || tickSeq[tickSeq.length - 1] < tick;
+
+  if (append) {
+    tickSeq.push(tick);
+  }
+  else {
+    var targetIndex = SortedIndexBy(tickSeq, tick);
+    tickSeq.splice(targetIndex, 0, tick);
+  }
 
   var bucketKey = makeBucketKey(tick);
   var entry = new Entry(tick, value);
   var bucket = this.internals.bucketMap.get(bucketKey);
   if (!bucket) {
+    // Add the key to the bucketKeys array, used for lookup of buckets by zero-based index
+    if (append) {
+      this.internals.bucketKeys.push(bucketKey);
+    }
+    else {
+      var bucketKeyIndex = SortedIndexBy(this.internals.bucketKeys, bucketKey);
+      this.internals.bucketKeys.splice(bucketKeyIndex, 0, bucketKey);
+    }
     bucket = [ entry ];
     this.internals.bucketMap.set(bucketKey, bucket);
     return;
   }
-  var bucketIndex = SortedIndexBy(bucket, entry, entryTickMap);
-  bucket.splice(bucketIndex, 0, entry);
+
+  if (append) {
+    bucket.push(entry);
+  }
+  else {
+    var bucketIndex = SortedIndexBy(bucket, entry, entryTickMap);
+    bucket.splice(bucketIndex, 0, entry);
+  }
 }
 
 /**
@@ -53,6 +79,10 @@ TickMap.prototype.add = function(tick, value) {
 TickMap.prototype.item = function(index) {
   var tick = this.internals.tickSeq[index];
   return this.get(tick);
+}
+
+TickMap.prototype.bucketAt = function(bucketIndex) {
+  return this.internals.bucketKeys[bucketIndex];
 }
 
 /**

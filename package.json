@@ -4,7 +4,8 @@
   "description": "A bucket list-like data structure decimal time ticks within a time period",
   "main": "tick-map.js",
   "scripts": {
-    "test": "tap test --branches=100 --functions=100 --lines=100 --statements=100"
+    "test": "tap test --100",
+    "cov": "tap test --100 --coverage-report=html"
   },
   "repository": {
     "type": "git",
@@ -27,9 +28,9 @@
     "tap": "^7.1.2"
   },
   "dependencies": {
+    "es6-map": "^0.1.4",
     "lodash.find": "^4.6.0",
-    "lodash.sortedindexby": "^4.6.0",
-    "pseudomap": "^1.0.2"
+    "lodash.sortedindexby": "^4.6.0"
   },
   "runkitExampleFilename": "example.js"
 }

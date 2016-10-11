@@ -80,6 +80,21 @@ test('length and bucket count when buckets have many', function(t) {
   t.end();
 });
 
+test('get buckets by zero-based index', function(t) {
+  var tm = new TickMap();
+  var ticks = [2.2,3.3,3.999,5.5,6.6,6,6.9999];
+  ticks.forEach(function(tick) {
+    tm.add(tick, { prop: new Date() });
+  });
+  t.equal(tm.bucketCount, 4);
+  t.equal(tm.bucketAt(0), 2)
+  t.equal(tm.bucketAt(1), 3)
+  t.equal(tm.bucketAt(2), 5)
+  t.equal(tm.bucketAt(3), 6)
+  t.equal(tm.bucketAt(4), undefined)
+  t.end();
+});
+
 test('add a value and fail to get by bucket neighbour', function(t) {
   var tm = TickMap();
   var value = { prop: new Date() }; // Can be anything
