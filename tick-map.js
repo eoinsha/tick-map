@@ -32,6 +32,39 @@ Object.defineProperties(TickMap.prototype, {
   }}
 });
 
+var hasSymbol = typeof Symbol === 'function';
+/* istanbul ignore next */ // Depends on ES6 support level
+if (hasSymbol) {
+  Object.defineProperty(TickMap.prototype, Symbol.iterator, {
+    get: function() {
+      return this.iterator;
+    }
+  });
+}
+
+TickMap.prototype.iterator = function() {
+  var tm = this;
+  return {
+    next: function() {
+      var result = {
+        done: this.$bucket === tm.internals.bucketKeys.length
+      };
+
+      if (!result.done) {
+        var bucket = tm.internals.bucketMap.get(tm.internals.bucketKeys[this.$bucket]);
+        result.value = bucket[this.$bucketIdx];
+        ++this.$bucketIdx;
+        if (this.$bucketIdx === bucket.length) {
+          this.$bucketIdx = 0;
+          ++this.$bucket;
+        }
+      }
+      return result;
+    },
+    $bucket: 0,
+    $bucketIdx: 0
+  }
+}
 
 TickMap.prototype.add = function(tick, value) {
   var append = false;
@@ -82,7 +115,7 @@ TickMap.prototype.remove = function(tick, value) {
   var bucketKey = makeBucketKey(tick);
   var bucket = this.internals.bucketMap.get(bucketKey);
   if (bucket) {
-    const bucketIndex = FindIndex(bucket, {tick: tick, value: value});
+    const bucketIndex = FindIndex(bucket, bucketFindPredicate(tick, value));
     if (bucketIndex > -1) {
       if (bucket.length === 1) { // Would be empty so delete the bucket
         this.internals.bucketMap.delete(bucketKey);
@@ -97,6 +130,15 @@ TickMap.prototype.remove = function(tick, value) {
     }
   }
   return false;
+}
+
+/**
+ * Predicate for finding in buckets using tick and value identity
+ */
+function bucketFindPredicate(tick, value) {
+  return function(item) {
+    return item.tick === tick && item.value === value;
+  }
 }
 
 /**

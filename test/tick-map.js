@@ -148,6 +148,40 @@ test('remove values', function(t) {
   t.end();
 });
 
+
+test('plain iterator', function(t) {
+  var tm = new TickMap();
+  var ticks = [
+    2.2,
+    3.3,3.999,
+    5.5,
+    6.6,6,6.9999
+  ];
+  var sorted = [0,1,2,3,5,4,6];
+  var values = [];
+  ticks.forEach(function(tick) {
+    var value = { prop: new Date() };
+    values.push(value);
+    tm.add(tick, value);
+  });
+
+  var it = tm.iterator();
+  var iteration;
+  for(var idx = 0; idx < ticks.length; idx++) {
+    iteration = it.next();
+    t.notOk(iteration.done);
+    t.equal(iteration.value.tick, ticks[sorted[idx]]);
+    t.equal(iteration.value.value, values[sorted[idx]]);
+  }
+
+  t.ok(it.next().done);
+  t.end();
+});
+
+if (typeof Symbol === 'function') {
+  require('../es6-tests/tick-map');
+}
+
 test('get correct last bucket index for some values', function(t) {
   var tm = new TickMap();
   var ticks = [
