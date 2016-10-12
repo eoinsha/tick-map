@@ -3,7 +3,7 @@ module.exports = TickMap;
 var Map = require('es6-map');
 
 var Find = require('lodash.find');
-var FindIndex = require('lodash.findIndex');
+var FindIndex = require('lodash.findindex');
 var SortedIndexBy = require('lodash.sortedindexby');
 
 var EMPTY = []; // Avoid creating man empty arrays for very sparse tick maps
