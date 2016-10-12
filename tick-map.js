@@ -95,16 +95,26 @@ TickMap.prototype.add = function(tick, value) {
     }
     bucket = [ entry ];
     this.internals.bucketMap.set(bucketKey, bucket);
-    return;
-  }
-
-  if (append) {
-    bucket.push(entry);
   }
   else {
-    var bucketIndex = SortedIndexBy(bucket, entry, entryTickMap);
-    bucket.splice(bucketIndex, 0, entry);
+    if (append) {
+      bucket.push(entry);
+    }
+    else {
+      var bucketIndex = SortedIndexBy(bucket, entry, entryTickMap);
+      bucket.splice(bucketIndex, 0, entry);
+    }
   }
+
+  // Allow array-like [] access to _entries_ by index
+  var lastIdx = this.internals.tickSeq.length - 1;
+  var tm = this;
+  Object.defineProperty(this, lastIdx, {
+    enumerable: false,
+    get: function() {
+      return tm.getEntry(tm.internals.tickSeq[lastIdx]);
+    }
+  });
 }
 
 /**
@@ -126,6 +136,8 @@ TickMap.prototype.remove = function(tick, value) {
         bucket.splice(bucketIndex, 1);
       }
       this.internals.tickSeq.splice(this.internals.tickSeq.indexOf(tick), 1);
+      var lastIdx = this.internals.tickSeq.length - 1;
+      delete this[lastIdx]; // Remove property accessor by idx
       return true;
     }
   }
@@ -181,18 +193,23 @@ TickMap.prototype.bucketAt = function(bucketIndex) {
 }
 
 /**
- * Retrieve an item by exact tick.
+ * Retrieve an entry {tick, value} by exact tick.
+ *
+ * @return The entry or `undefined`
+ */
+TickMap.prototype.getEntry = function(tick) {
+  var bucket = this._getBucket(tick);
+  return bucket && getInBucket(bucket, tick);
+}
+
+/**
+ * Retrieve a value by exact tick.
  *
  * @return The item or `undefined`
  */
 TickMap.prototype.get = function(tick) {
-  var bucket = this._getBucket(tick);
-  if (bucket) {
-    var entry = getInBucket(bucket, tick);
-    if (entry) {
-      return entry.value;
-    }
-  }
+  var entry = this.getEntry(tick);
+  return entry && entry.value;
 }
 
 /**

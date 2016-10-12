@@ -178,6 +178,31 @@ test('plain iterator', function(t) {
   t.end();
 });
 
+test('array-like access', function(t) {
+  var tm = new TickMap();
+  var ticks = [
+    2.2,
+    3.3,3.999,
+    5.5,
+    6.6,6,6.9999
+  ];
+  var sorted = [0,1,2,3,5,4,6];
+  var values = [];
+  ticks.forEach(function(tick) {
+    var value = { prop: new Date() };
+    values.push(value);
+    tm.add(tick, value);
+  });
+
+  debugger;
+  for(var idx = 0; idx < ticks.length; idx++) {
+    t.equal(tm[idx].tick, ticks[sorted[idx]]);
+    t.equal(tm[idx].value, values[sorted[idx]]);
+  }
+
+  t.end();
+});
+
 if (typeof Symbol === 'function') {
   require('../es6-tests/tick-map');
 }
