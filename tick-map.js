@@ -188,6 +188,17 @@ TickMap.prototype.item = function(index) {
   return this.get(tick);
 }
 
+/**
+ * Retrieve an item by the nearest, last matching index
+ */
+TickMap.prototype.lastItem = function(index) {
+  if (this.internals.tickSeq.length) {
+    var lastIndex = Math.min(index, this.internals.tickSeq.length - 1);
+    var tick = this.internals.tickSeq[lastIndex];
+    return this.get(tick);
+  }
+}
+
 TickMap.prototype.bucketAt = function(bucketIndex) {
   return this.internals.bucketKeys[bucketIndex];
 }

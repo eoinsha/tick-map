@@ -290,7 +290,9 @@ test('add a load of values and retrieve by all means', function(t) {
   t.equal(tm.length, numValues);
   for (var i = 0; i < numValues; i++) {
     t.equal(tm.item(i), values[i]);
+    t.equal(tm.lastItem(i), values[i]);
   }
+  t.equals(tm.lastItem(numValues + 1), values[numValues - 1]);
 
   for (prop in valuesByTick) {
     if (valuesByTick.hasOwnProperty(prop)) {
@@ -302,5 +304,24 @@ test('add a load of values and retrieve by all means', function(t) {
       t.ok(allBucketItems.indexOf(valuesByTick[prop]) > -1);
     }
   }
+  t.end();
+});
+
+
+test('check bounds for lastItem access', function(t) {
+  var tm = new TickMap();
+  t.equal(tm.item(0), undefined);
+  t.equal(tm.lastItem(0), undefined);
+  t.equal(tm.item(2), undefined);
+  t.equal(tm.lastItem(2), undefined);
+  var values = [2,4,6,8];
+  for(var i = 0; i < values.length; i++) {
+    tm.add(i, values[i]);
+  }
+  for(var i = 0; i < values.length; i++) {
+    t.equal(tm.lastItem(i), values[i]);
+  }
+  t.equal(tm.lastItem(5), values[values.length - 1]);
+  t.equal(tm.lastItem(555), values[values.length - 1]);
   t.end();
 });
