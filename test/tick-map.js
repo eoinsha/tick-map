@@ -288,6 +288,7 @@ test('add a load of values and retrieve by all means', function(t) {
     genTick += Math.random() * 3; // unique but sparse tick population
   }
   t.equal(tm.length, numValues);
+
   for (var i = 0; i < numValues; i++) {
     t.equal(tm.item(i), values[i]);
     t.equal(tm.lastItem(i), values[i]);
@@ -323,5 +324,31 @@ test('check bounds for lastItem access', function(t) {
   }
   t.equal(tm.lastItem(5), values[values.length - 1]);
   t.equal(tm.lastItem(555), values[values.length - 1]);
+  t.end();
+});
+
+test('retrieve by lastItemByTime', function(t) {
+  var tm = new TickMap();
+  var testTicks = [0.1, 1.0, 1.2, 1.7, 4.2, 4.5];
+  for (var i = 0; i < testTicks.length; i++) {
+    tm.add(testTicks[i], 'Value ' + testTicks[i]);
+  }
+
+  for (var i = 0; i < testTicks.length; i++) {
+    t.equal(tm.lastItemByTime(testTicks[i]), 'Value ' + testTicks[i]);
+  }
+
+  t.equal(tm.lastItemByTime(0), 'Value 0.1');
+  t.equal(tm.lastItemByTime(0.2), 'Value 0.1');
+  t.equal(tm.lastItemByTime(0.3), 'Value 0.1');
+  t.equal(tm.lastItemByTime(1.1), 'Value 1');
+  t.equal(tm.lastItemByTime(1.3), 'Value 1.2');
+  t.equal(tm.lastItemByTime(1.4), 'Value 1.2');
+  t.equal(tm.lastItemByTime(1.7), 'Value 1.7');
+  t.equal(tm.lastItemByTime(1.8), 'Value 1.7');
+  t.equal(tm.lastItemByTime(2.5), 'Value 1.7');
+  t.equal(tm.lastItemByTime(4.4), 'Value 4.2');
+  t.equal(tm.lastItemByTime(4.6), 'Value 4.5');
+  t.equal(tm.lastItemByTime(100), 'Value 4.5');
   t.end();
 });

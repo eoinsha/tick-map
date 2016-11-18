@@ -199,6 +199,14 @@ TickMap.prototype.lastItem = function(index) {
   }
 }
 
+TickMap.prototype.lastItemByTime = function(tick) {
+  var targetIndex = SortedIndexBy(this.internals.tickSeq, tick);
+  if (targetIndex !== 0 && (targetIndex === this.internals.tickSeq.length || this.internals.tickSeq[targetIndex] > tick)) {
+    --targetIndex;
+  }
+  return this.get(this.internals.tickSeq[targetIndex]);
+}
+
 TickMap.prototype.bucketAt = function(bucketIndex) {
   return this.internals.bucketKeys[bucketIndex];
 }
